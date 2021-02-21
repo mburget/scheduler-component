@@ -40,6 +40,7 @@ from homeassistant.components.climate import (
 from .const import (
     CONDITION_TYPE_AND,
     DAY_TYPE_WEEKEND,
+    DAY_TYPE_ONCE,
     DAY_TYPE_WORKDAY,
     DOMAIN,
     MATCH_TYPE_ABOVE,
@@ -115,6 +116,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         schedule_id = schedule.schedule_id
         name = schedule.name
+        _LOGGER.debug(f"MB: New schedule with name {name} added")
+        _LOGGER.debug(f"MB: Schedule weekdays: {schedule.weekdays}")
+        _LOGGER.debug(f"MB: Schedule repeat_type: {schedule.repeat_type}")
+        _LOGGER.debug(f"MB: Schedule enabled: {schedule.enabled}")
+        _LOGGER.debug(f"MB: Schedule timeslots: {schedule.timeslots}")
+        
 
         if name and len(slugify(name)):
             entity_id = "{}.schedule_{}".format(PLATFORM, slugify(name))

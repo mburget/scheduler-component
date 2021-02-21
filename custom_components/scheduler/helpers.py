@@ -9,6 +9,7 @@ from .const import (
     DAY_TYPE_DAILY,
     DAY_TYPE_WEEKEND,
     DAY_TYPE_WORKDAY,
+    DAY_TYPE_ONCE,
     OffsetTimePattern,
 )
 

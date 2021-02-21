@@ -19,6 +19,7 @@ SUN_ENTITY = "sun.sun"
 DAY_TYPE_DAILY = "daily"
 DAY_TYPE_WORKDAY = "workday"
 DAY_TYPE_WEEKEND = "weekend"
+DAY_TYPE_ONCE = "once" #MB
 
 WORKDAY_ENTITY = "binary_sensor.workday_sensor"
 
@@ -60,6 +61,10 @@ def validate_time(time):
         else:
             return time
 
+def validate_date(date):
+    #TODO: check valid date
+    return date
+
 
 CONDITION_SCHEMA = vol.Schema(
     {
@@ -84,6 +89,7 @@ TIMESLOT_SCHEMA = vol.Schema(
     {
         vol.Required("start"): validate_time,
         vol.Optional("stop"): validate_time,
+        vol.Optional("date"): validate_date,
         vol.Optional("conditions"): vol.All(
             cv.ensure_list, vol.Length(min=1), [CONDITION_SCHEMA]
         ),
@@ -118,6 +124,7 @@ SCHEDULE_SCHEMA = vol.Schema(
                         DAY_TYPE_WORKDAY,
                         DAY_TYPE_WEEKEND,
                         DAY_TYPE_DAILY,
+                        DAY_TYPE_ONCE, #MB
                     ]
                 )
             ],

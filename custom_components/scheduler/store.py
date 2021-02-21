@@ -43,6 +43,7 @@ class TimeslotEntry:
 
     start = attr.ib(type=str, default=None)
     stop = attr.ib(type=str, default=None)
+    date = attr.ib(type=str,default=None)
     conditions = attr.ib(type=[ConditionEntry], default=[])
     condition_type = attr.ib(type=str, default=None)
     actions = attr.ib(type=[ActionEntry], default=[])

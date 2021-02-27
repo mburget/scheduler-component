@@ -322,6 +322,7 @@ class ScheduleEntity(ToggleEntity):
                 weekdays=self.schedule["weekdays"],
                 sun_data=self.sun_data,
                 workday_data=self.workday_data,
+                oncedate=slot["date"],
             )
 
             timestamps.append(next_time)
@@ -673,12 +674,14 @@ class ScheduleEntity(ToggleEntity):
                 weekdays=self.schedule["weekdays"],
                 sun_data=self.sun_data,
                 workday_data=self.workday_data,
+                oncedate=slot["date"],
             )
             ts_new = calculate_next_start_time(
                 start=slot["start"],
                 weekdays=self.schedule["weekdays"],
                 sun_data=sun_data,
                 workday_data=self.workday_data,
+                oncedate=slot["date"],
             )
             delta = (ts_old - ts_new).total_seconds()
 
@@ -709,12 +712,14 @@ class ScheduleEntity(ToggleEntity):
                 weekdays=self.schedule["weekdays"],
                 sun_data=self.sun_data,
                 workday_data=self.workday_data,
+                oncedate=slot["date"],
             )
             ts_new = calculate_next_start_time(
                 start=slot["start"],
                 weekdays=self.schedule["weekdays"],
                 sun_data=self.sun_data,
                 workday_data=workday_data,
+                oncedate=slot["date"],
             )
             delta = (ts_old - ts_new).total_seconds()
 

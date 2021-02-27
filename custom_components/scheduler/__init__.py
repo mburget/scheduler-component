@@ -206,12 +206,15 @@ class SchedulerCoordinator(DataUpdateCoordinator):
 
     def async_create_schedule(self, data):
         res = self.store.async_create_schedule(data)
+        #MB entry point
+        _LOGGER.debug(f"New schedule created with {str(data)} result {str(res)}")
         if res:
             self._create_schedule_handler(res)
 
     async def async_edit_schedule(self, schedule_id: str, data: dict):
         if schedule_id not in self.hass.data[DOMAIN]["schedules"]:
             return
+        _LOGGER.debug(f"Schedule edit data {str(data)} id {str(schedule_id)}")
         item = self.async_get_schedule(schedule_id)
 
         if "name" in data and item["name"] != data["name"]:

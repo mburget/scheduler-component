@@ -188,6 +188,7 @@ class ScheduleStorage:
                 schedule_id = secrets.token_hex(3)
 
         data = parse_schedule_data(data)
+        _LOGGER.debug(f"Data parsed to create schedule {str(data)}") #MB 
         new_schedule = ScheduleEntry(**data, schedule_id=schedule_id)
         self.schedules[schedule_id] = new_schedule
         self.async_schedule_save()

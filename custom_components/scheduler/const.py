@@ -1,6 +1,7 @@
 """Store constants."""
 import voluptuous as vol
 import re
+import logging
 import homeassistant.util.dt as dt_util
 from homeassistant.helpers import config_validation as cv
 from homeassistant.const import (
@@ -41,6 +42,8 @@ SERVICE_REMOVE = "remove"
 SERVICE_EDIT = "edit"
 SERVICE_ADD = "add"
 
+_LOGGER = logging.getLogger(__name__)
+
 OffsetTimePattern = re.compile("^([a-z]+)([-|\+]{1})([0-9:]+)$")
 
 
@@ -63,6 +66,7 @@ def validate_time(time):
 
 def validate_date(date):
     #TODO: check valid date
+    _LOGGER.debug(f"date is {date}")
     return date
 
 

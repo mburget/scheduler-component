@@ -149,13 +149,15 @@ def is_allowed_day(date_obj: datetime.datetime, weekdays=None, workday_data=None
 
 
 def calculate_next_start_time(
-    start=None, weekdays=None, sun_data=None, workday_data=None, now=None
+    start=None, weekdays=None, sun_data=None, workday_data=None, now=None, oncedate=None
 ):
     """Get datetime object with closest occurance based on time + weekdays input"""
     nexttime = calculate_datetime_from_entry(start, sun_data=sun_data)
+    _LOGGER.debug(f"debA: start={start}, weekdays={weekdays}, workday_data={workday_data}, now={now}, nexttime={nexttime}, oncedate={oncedate}")
+    
     if not now:
         now = dt_util.now().replace(microsecond=0)
-
+    
     # check if time has already passed for today
     iterations = 0
     delta = nexttime - now
@@ -163,6 +165,13 @@ def calculate_next_start_time(
         nexttime = nexttime + datetime.timedelta(days=1)
         delta = nexttime - now
         iterations = iterations + 1
+    
+    #if once date then return directly TODO
+    if weekdays==['once'] and oncedate:
+        days_delta = datetime.datetime.strptime(oncedate, '%Y-%m-%d')-datetime.datetime.today()
+        nexttime=nexttime + datetime.timedelta(days=days_delta.days)
+        _LOGGER.debug(f"result MB: nexttime={nexttime}")
+        return nexttime
 
     # check if timer is restricted in days of the week
     while (
@@ -173,7 +182,7 @@ def calculate_next_start_time(
         iterations = iterations + 1
 
     if iterations == 100:
-        raise Exception("failed to calculate timestamp")
+        raise Exception("failed to calculate timestamp 1")
 
     return nexttime
 
@@ -182,8 +191,11 @@ def is_between_start_time_and_end_time(
     start=None, stop=None, weekdays=None, sun_data=None, workday_data=None, time=None
 ):
     """Get datetime object with closest occurance based on time + weekdays input"""
-
+    _LOGGER.debug(f"deb1: start={start}, stop={stop}, weekdays={weekdays}, sun_data={sun_data}, workday_data={workday_data}, time={time}")
     start_time = calculate_datetime_from_entry(start, sun_data)
+    if weekdays == ['once']:
+        _LOGGER.debug("Once event with start in the past not yet supported")#TODO
+        return False
     if stop:
         end_time = calculate_datetime_from_entry(stop, sun_data)
     else:
@@ -205,7 +217,8 @@ def is_between_start_time_and_end_time(
         start_time = start_time + datetime.timedelta(days=1)
         delta = end_time - now
         iterations = iterations + 1
-
+    _LOGGER.debug(f"deb2: start_time={start_time} end_time={end_time} iterations={iterations} delta={delta}")
+    
     # check if timer is restricted in days of the week
     if not time:
         while (
@@ -217,7 +230,7 @@ def is_between_start_time_and_end_time(
             iterations = iterations + 1
 
         if iterations == 100:
-            raise Exception("failed to calculate timestamp")
+            raise Exception("failed to calculate timestamp 2")
 
     delta_start = (start_time - now).total_seconds()
     delta_end = (end_time - now).total_seconds()

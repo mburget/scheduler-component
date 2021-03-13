@@ -116,11 +116,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         schedule_id = schedule.schedule_id
         name = schedule.name
-        _LOGGER.debug(f"MB: New schedule with name {name} added")
-        _LOGGER.debug(f"MB: Schedule weekdays: {schedule.weekdays}")
-        _LOGGER.debug(f"MB: Schedule repeat_type: {schedule.repeat_type}")
-        _LOGGER.debug(f"MB: Schedule enabled: {schedule.enabled}")
-        _LOGGER.debug(f"MB: Schedule timeslots: {schedule.timeslots}")
+        #_LOGGER.debug(f"MB: New schedule with name {name} added")
+        #_LOGGER.debug(f"MB: Schedule weekdays: {schedule.weekdays}")
+        #_LOGGER.debug(f"MB: Schedule repeat_type: {schedule.repeat_type}")
+        #_LOGGER.debug(f"MB: Schedule enabled: {schedule.enabled}")
+        #_LOGGER.debug(f"MB: Schedule timeslots: {schedule.timeslots}")
         
 
         if name and len(slugify(name)):
@@ -322,7 +322,7 @@ class ScheduleEntity(ToggleEntity):
                 weekdays=self.schedule["weekdays"],
                 sun_data=self.sun_data,
                 workday_data=self.workday_data,
-                oncedate=slot["date"],
+                oncedate=self.schedule["sdate"],
             )
 
             timestamps.append(next_time)
@@ -674,14 +674,14 @@ class ScheduleEntity(ToggleEntity):
                 weekdays=self.schedule["weekdays"],
                 sun_data=self.sun_data,
                 workday_data=self.workday_data,
-                oncedate=slot["date"],
+                oncedate=self.schedule["sdate"],
             )
             ts_new = calculate_next_start_time(
                 start=slot["start"],
                 weekdays=self.schedule["weekdays"],
                 sun_data=sun_data,
                 workday_data=self.workday_data,
-                oncedate=slot["date"],
+                oncedate=self.schedule["sdate"],
             )
             delta = (ts_old - ts_new).total_seconds()
 
@@ -712,14 +712,14 @@ class ScheduleEntity(ToggleEntity):
                 weekdays=self.schedule["weekdays"],
                 sun_data=self.sun_data,
                 workday_data=self.workday_data,
-                oncedate=slot["date"],
+                oncedate=self.schedule["sdate"],
             )
             ts_new = calculate_next_start_time(
                 start=slot["start"],
                 weekdays=self.schedule["weekdays"],
                 sun_data=self.sun_data,
                 workday_data=workday_data,
-                oncedate=slot["date"],
+                oncedate=self.schedule["sdate"],
             )
             delta = (ts_old - ts_new).total_seconds()
 

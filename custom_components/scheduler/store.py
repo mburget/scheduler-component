@@ -58,6 +58,7 @@ class ScheduleEntry:
     timeslots = attr.ib(type=[TimeslotEntry], default=[])
     repeat_type = attr.ib(type=str, default=None)
     name = attr.ib(type=str, default=None)
+    sdate = attr.ib(type=str, default=None)
     enabled = attr.ib(type=bool, default=True)
 
 

@@ -153,11 +153,19 @@ def calculate_next_start_time(
 ):
     """Get datetime object with closest occurance based on time + weekdays input"""
     nexttime = calculate_datetime_from_entry(start, sun_data=sun_data)
-    _LOGGER.debug(f"debA: start={start}, weekdays={weekdays}, workday_data={workday_data}, now={now}, nexttime={nexttime}, oncedate={oncedate}")
+    #_LOGGER.debug(f"nexttime1={nexttime}")
+    #_LOGGER.debug(f"debA: start={start}, weekdays={weekdays}, workday_data={workday_data}, now={now}, nexttime={nexttime}, oncedate={oncedate}")
     
     if not now:
         now = dt_util.now().replace(microsecond=0)
     
+    #if once date then calculate and return directly TODO
+    if weekdays==['once'] and oncedate:
+        days_delta = datetime.datetime.strptime(oncedate, '%Y-%m-%d')-datetime.datetime.today()
+        nexttime=nexttime + datetime.timedelta(days=days_delta.days+1)
+        _LOGGER.debug(f"result MB: oncedate={oncedate}  nexttime3={nexttime} deltadays={days_delta}")
+        return nexttime
+
     # check if time has already passed for today
     iterations = 0
     delta = nexttime - now
@@ -165,13 +173,8 @@ def calculate_next_start_time(
         nexttime = nexttime + datetime.timedelta(days=1)
         delta = nexttime - now
         iterations = iterations + 1
+    #_LOGGER.debug(f"nexttime2={nexttime}")
     
-    #if once date then return directly TODO
-    if weekdays==['once'] and oncedate:
-        days_delta = datetime.datetime.strptime(oncedate, '%Y-%m-%d')-datetime.datetime.today()
-        nexttime=nexttime + datetime.timedelta(days=days_delta.days)
-        _LOGGER.debug(f"result MB: nexttime={nexttime}")
-        return nexttime
 
     # check if timer is restricted in days of the week
     while (

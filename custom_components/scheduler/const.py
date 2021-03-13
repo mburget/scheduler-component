@@ -93,7 +93,7 @@ TIMESLOT_SCHEMA = vol.Schema(
     {
         vol.Required("start"): validate_time,
         vol.Optional("stop"): validate_time,
-        vol.Optional("date"): validate_date,
+        vol.Optional("date"): validate_date, #deprecated
         vol.Optional("conditions"): vol.All(
             cv.ensure_list, vol.Length(min=1), [CONDITION_SCHEMA]
         ),
@@ -143,6 +143,7 @@ SCHEDULE_SCHEMA = vol.Schema(
                 REPEAT_TYPE_PAUSE,
             ]
         ),
+        vol.Optional("sdate"): cv.string, #MB
         vol.Optional("name"): cv.string,
     }
 )

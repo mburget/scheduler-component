@@ -82,7 +82,7 @@ def calculate_datetime_from_entry(time: str, sun_data=None):
             time_obj = time_sun + time_offset
         else:
             time_obj = time_sun - time_offset
-
+    _LOGGER.debug(f"calculate_datetime_from_entry: time_obj={str(time_obj)}")
     return time_obj
 
 
@@ -163,7 +163,9 @@ def calculate_next_start_time(
     if weekdays==['once'] and oncedate:
         days_delta = datetime.datetime.strptime(oncedate, '%Y-%m-%d')-datetime.datetime.today()
         nexttime=nexttime + datetime.timedelta(days=days_delta.days+1)
-        _LOGGER.debug(f"result MB: oncedate={oncedate}  nexttime3={nexttime} deltadays={days_delta}")
+        if nexttime<now:
+            nexttime=nexttime + datetime.timedelta(90) #TODO dirty hack set to 90 days in furture
+        _LOGGER.debug(f"calculate_next_start_time: result MB: oncedate={oncedate}  nexttime3={nexttime} deltadays={days_delta}")
         return nexttime
 
     # check if time has already passed for today
@@ -186,7 +188,8 @@ def calculate_next_start_time(
 
     if iterations == 100:
         raise Exception("failed to calculate timestamp 1")
-
+    
+    _LOGGER.debug(f"calculate_next_start_timer: oncedate={oncedate}  nexttime1={nexttime}")
     return nexttime
 
 
@@ -239,8 +242,10 @@ def is_between_start_time_and_end_time(
     delta_end = (end_time - now).total_seconds()
 
     if delta_start <= 0 and delta_end > 0:
+        _LOGGER.debug(f"is_between_start_time_and_end_time: True")
         return True
     else:
+        _LOGGER.debug(f"is_between_start_time_and_end_time: False")
         return False
 
 

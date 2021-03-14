@@ -60,7 +60,7 @@ class ScheduleEntry:
     name = attr.ib(type=str, default=None)
     sdate = attr.ib(type=str, default=None)
     enabled = attr.ib(type=bool, default=True)
-
+    _LOGGER.debug(f"New Schedule: {name}")
 
 def parse_schedule_data(data: dict):
     if "timeslots" in data:

@@ -116,11 +116,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         schedule_id = schedule.schedule_id
         name = schedule.name
-        #_LOGGER.debug(f"MB: New schedule with name {name} added")
-        #_LOGGER.debug(f"MB: Schedule weekdays: {schedule.weekdays}")
-        #_LOGGER.debug(f"MB: Schedule repeat_type: {schedule.repeat_type}")
-        #_LOGGER.debug(f"MB: Schedule enabled: {schedule.enabled}")
-        #_LOGGER.debug(f"MB: Schedule timeslots: {schedule.timeslots}")
+        _LOGGER.debug(f"MB: New schedule with name {name} added")
+        _LOGGER.debug(f"MB: Schedule weekdays: {schedule.weekdays}")
+        _LOGGER.debug(f"MB: Schedule repeat_type: {schedule.repeat_type}")
+        _LOGGER.debug(f"MB: Schedule enabled: {schedule.enabled}")
+        _LOGGER.debug(f"MB: Schedule timeslots: {schedule.timeslots}")
         
 
         if name and len(slugify(name)):
@@ -417,21 +417,22 @@ class ScheduleEntity(ToggleEntity):
             # execute the action
             await self.async_execute_command()
 
-            if self.schedule["repeat_type"] == REPEAT_TYPE_PAUSE:
-                _LOGGER.debug(
-                    "%s is configured to turn off after execution, disabling"
-                    % self.entity_id
-                )
-                await self.async_turn_off()
-                return
-            elif self.schedule["repeat_type"] == REPEAT_TYPE_SINGLE:
+            #MB: once schedule at least pause after execution
+            if self.schedule["repeat_type"] == REPEAT_TYPE_SINGLE:
                 _LOGGER.debug(
                     "%s is configured to remove after execution, deleting"
                     % self.entity_id
                 )
                 await self.coordinator.async_delete_schedule(self.schedule_id)
                 return
-
+            elif self.schedule["repeat_type"] == REPEAT_TYPE_PAUSE or self.schedule["weekdays"]==['once']:
+                _LOGGER.debug(
+                    "%s is configured to turn off after execution, disabling"
+                    % self.entity_id
+                )
+                await self.async_turn_off()
+                return
+            
         # wait 1 minute before restarting
         now = dt_util.now().replace(microsecond=0)
         next = now + datetime.timedelta(minutes=1)

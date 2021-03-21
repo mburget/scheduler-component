@@ -4,11 +4,7 @@ import re
 import logging
 import homeassistant.util.dt as dt_util
 from homeassistant.helpers import config_validation as cv
-from homeassistant.const import (
-  ATTR_ENTITY_ID,
-  SUN_EVENT_SUNRISE,
-  SUN_EVENT_SUNSET
-)
+from homeassistant.const import ATTR_ENTITY_ID, SUN_EVENT_SUNRISE, SUN_EVENT_SUNSET
 
 VERSION = "3.0.4"
 
@@ -20,7 +16,7 @@ SUN_ENTITY = "sun.sun"
 DAY_TYPE_DAILY = "daily"
 DAY_TYPE_WORKDAY = "workday"
 DAY_TYPE_WEEKEND = "weekend"
-DAY_TYPE_ONCE = "once" #MB
+DAY_TYPE_ONCE = "once"  # MB
 
 WORKDAY_ENTITY = "binary_sensor.workday_sensor"
 
@@ -57,15 +53,16 @@ def validate_time(time):
     else:
         if res.group(1) not in [SUN_EVENT_SUNRISE, SUN_EVENT_SUNSET]:
             raise vol.Invalid("Invalid time entered: {}".format(time))
-        elif res.group(2) not in ['+', '-']:
+        elif res.group(2) not in ["+", "-"]:
             raise vol.Invalid("Invalid time entered: {}".format(time))
         elif not dt_util.parse_time(res.group(3)):
             raise vol.Invalid("Invalid time entered: {}".format(time))
         else:
             return time
 
+
 def validate_date(date):
-    #TODO: check valid date
+    # TODO: check valid date
     _LOGGER.debug(f"date is {date}")
     return date
 
@@ -93,7 +90,7 @@ TIMESLOT_SCHEMA = vol.Schema(
     {
         vol.Required("start"): validate_time,
         vol.Optional("stop"): validate_time,
-        vol.Optional("date"): validate_date, #deprecated
+        vol.Optional("date"): validate_date,  # deprecated
         vol.Optional("conditions"): vol.All(
             cv.ensure_list, vol.Length(min=1), [CONDITION_SCHEMA]
         ),
@@ -128,7 +125,7 @@ SCHEDULE_SCHEMA = vol.Schema(
                         DAY_TYPE_WORKDAY,
                         DAY_TYPE_WEEKEND,
                         DAY_TYPE_DAILY,
-                        DAY_TYPE_ONCE, #MB
+                        DAY_TYPE_ONCE,  # MB
                     ]
                 )
             ],
@@ -143,7 +140,7 @@ SCHEDULE_SCHEMA = vol.Schema(
                 REPEAT_TYPE_PAUSE,
             ]
         ),
-        vol.Optional("sdate"): cv.string, #MB
+        vol.Optional("sdate"): validate_date,  # MB
         vol.Optional("name"): cv.string,
     }
 )

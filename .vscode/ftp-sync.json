@@ -1,6 +1,6 @@
 {
     "remotePath": "/root/config",
-    "host": "homeassistant",
+    "host": "192.168.1.26",
     "username": "root",
     "password": "gecko278",
     "port": 22,

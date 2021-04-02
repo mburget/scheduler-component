@@ -43,7 +43,7 @@ class TimeslotEntry:
 
     start = attr.ib(type=str, default=None)
     stop = attr.ib(type=str, default=None)
-    date = attr.ib(type=str,default=None)
+    date = attr.ib(type=str, default=None)
     conditions = attr.ib(type=[ConditionEntry], default=[])
     condition_type = attr.ib(type=str, default=None)
     actions = attr.ib(type=[ActionEntry], default=[])
@@ -62,6 +62,7 @@ class ScheduleEntry:
     enabled = attr.ib(type=bool, default=True)
     _LOGGER.debug(f"New Schedule: {name}")
 
+
 def parse_schedule_data(data: dict):
     if "timeslots" in data:
         timeslots = []
@@ -79,6 +80,7 @@ def parse_schedule_data(data: dict):
                 timeslot = attr.evolve(timeslot, **{"actions": actions})
             timeslots.append(timeslot)
         data["timeslots"] = timeslots
+    _LOGGER.debug(f"parse_schedule_data: {data}")
     return data
 
 
@@ -105,6 +107,7 @@ class ScheduleStorage:
                     timeslots=entry["timeslots"],
                     repeat_type=entry["repeat_type"],
                     name=entry["name"],
+                    sdate=entry["sdate"],
                     enabled=entry["enabled"],
                 )
         self.schedules = schedules
@@ -132,6 +135,7 @@ class ScheduleStorage:
                 "weekdays": entry.weekdays,
                 "repeat_type": entry.repeat_type,
                 "name": entry.name,
+                "sdate": entry.sdate,
                 "enabled": entry.enabled,
             }
             for slot in entry.timeslots:
@@ -189,7 +193,7 @@ class ScheduleStorage:
                 schedule_id = secrets.token_hex(3)
 
         data = parse_schedule_data(data)
-        _LOGGER.debug(f"Data parsed to create schedule {str(data)}") #MB 
+        _LOGGER.debug(f"Data parsed to create schedule {str(data)}")  # MB
         new_schedule = ScheduleEntry(**data, schedule_id=schedule_id)
         self.schedules[schedule_id] = new_schedule
         self.async_schedule_save()

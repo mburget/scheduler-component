@@ -5,7 +5,7 @@ import logging
 import voluptuous as vol
 
 from homeassistant.components.switch import DOMAIN as PLATFORM
-from homeassistant.helpers import (entity_platform, config_validation as cv)
+from homeassistant.helpers import entity_platform, config_validation as cv
 from homeassistant.const import (
     STATE_ALARM_TRIGGERED as STATE_TRIGGERED,
     STATE_OFF,
@@ -61,10 +61,7 @@ _LOGGER = logging.getLogger(__name__)
 
 SERVICE_RUN_ACTION = "run_action"
 RUN_ACTION_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_ids,
-        vol.Optional("time"): cv.time
-    }
+    {vol.Required(ATTR_ENTITY_ID): cv.entity_ids, vol.Optional("time"): cv.time}
 )
 
 
@@ -120,8 +117,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         _LOGGER.debug(f"MB: Schedule weekdays: {schedule.weekdays}")
         _LOGGER.debug(f"MB: Schedule repeat_type: {schedule.repeat_type}")
         _LOGGER.debug(f"MB: Schedule enabled: {schedule.enabled}")
-        _LOGGER.debug(f"MB: Schedule timeslots: {schedule.timeslots}")
-        
+        # _LOGGER.debug(f"MB: Schedule timeslots: {schedule.timeslots}")
 
         if name and len(slugify(name)):
             entity_id = "{}.schedule_{}".format(PLATFORM, slugify(name))
@@ -417,7 +413,7 @@ class ScheduleEntity(ToggleEntity):
             # execute the action
             await self.async_execute_command()
 
-            #MB: once schedule at least pause after execution
+            # MB: once schedule at least pause after execution
             if self.schedule["repeat_type"] == REPEAT_TYPE_SINGLE:
                 _LOGGER.debug(
                     "%s is configured to remove after execution, deleting"
@@ -425,14 +421,16 @@ class ScheduleEntity(ToggleEntity):
                 )
                 await self.coordinator.async_delete_schedule(self.schedule_id)
                 return
-            elif self.schedule["repeat_type"] == REPEAT_TYPE_PAUSE or self.schedule["weekdays"]==['once']:
+            elif self.schedule["repeat_type"] == REPEAT_TYPE_PAUSE or self.schedule[
+                "weekdays"
+            ] == ["once"]:
                 _LOGGER.debug(
                     "%s is configured to turn off after execution, disabling"
                     % self.entity_id
                 )
                 await self.async_turn_off()
                 return
-            
+
         # wait 1 minute before restarting
         now = dt_util.now().replace(microsecond=0)
         next = now + datetime.timedelta(minutes=1)
@@ -463,28 +461,35 @@ class ScheduleEntity(ToggleEntity):
                 "data": action["service_data"],
             }
             if (
-                service_call["service"] == "{}.{}".format(CLIMATE_DOMAIN, SERVICE_SET_TEMPERATURE)
+                service_call["service"]
+                == "{}.{}".format(CLIMATE_DOMAIN, SERVICE_SET_TEMPERATURE)
                 and ATTR_HVAC_MODE in service_call["data"]
                 and ATTR_TEMPERATURE in service_call["data"]
                 and len(service_call["data"]) == 2
             ):
                 # fix for climate integrations which don't support setting hvac_mode and temperature together
-                service_calls.extend([
-                    {
-                        "service": "{}.{}".format(CLIMATE_DOMAIN, SERVICE_SET_HVAC_MODE),
-                        "entity_id": service_call["entity_id"],
-                        "data": {
-                            ATTR_HVAC_MODE: service_call["data"][ATTR_HVAC_MODE]
+                service_calls.extend(
+                    [
+                        {
+                            "service": "{}.{}".format(
+                                CLIMATE_DOMAIN, SERVICE_SET_HVAC_MODE
+                            ),
+                            "entity_id": service_call["entity_id"],
+                            "data": {
+                                ATTR_HVAC_MODE: service_call["data"][ATTR_HVAC_MODE]
+                            },
                         },
-                    },
-                    {
-                        "service": "{}.{}".format(CLIMATE_DOMAIN, SERVICE_SET_TEMPERATURE),
-                        "entity_id": service_call["entity_id"],
-                        "data": {
-                            ATTR_TEMPERATURE: service_call["data"][ATTR_TEMPERATURE]
+                        {
+                            "service": "{}.{}".format(
+                                CLIMATE_DOMAIN, SERVICE_SET_TEMPERATURE
+                            ),
+                            "entity_id": service_call["entity_id"],
+                            "data": {
+                                ATTR_TEMPERATURE: service_call["data"][ATTR_TEMPERATURE]
+                            },
                         },
-                    }
-                ])
+                    ]
+                )
             else:
                 service_calls.append(service_call)
 

@@ -80,7 +80,7 @@ def parse_schedule_data(data: dict):
                 timeslot = attr.evolve(timeslot, **{"actions": actions})
             timeslots.append(timeslot)
         data["timeslots"] = timeslots
-    _LOGGER.debug(f"parse_schedule_data: {data}")
+    # _LOGGER.debug(f"parse_schedule_data: {data}")
     return data
 
 
